@@ -34,7 +34,7 @@ make clean    # 移除所有執行檔與目的檔
 ### Daemon 模式
 
 ```bash
-./fix_server -d       # 在背景執行，並印出 PID
+./fix_server -d       # 在背景執行, 透過cat /tmp/fix_server.pid 取得pid
 ./fix_client          # 連線至 daemon
 ```
 
