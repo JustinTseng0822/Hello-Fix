@@ -6,7 +6,7 @@
 
 | 檔案 | 說明 |
 |------|------|
-| `fix_server.c` | 單執行緒 TCP 伺服器，發送 FIX 4.2 Heartbeat，支援 Daemon 模式 |
+| `fix_server.c` | TCP while(1) - loop 伺服器 ，發送 FIX 4.2 Heartbeat，支援 Daemon 模式 |
 | `fix_server_th.c` | 多執行緒版本，預設啟動 5 條 worker thread，使用 pthread |
 | `fix_client.c` | 客戶端，接收並驗證 CheckSum，印出 FIX 訊息內容 |
 | `test_unit.c` | `calculate_checksum()` 的單元測試，共 6 個測試案例 |
@@ -22,7 +22,7 @@ make clean    # 移除所有執行檔與目的檔
 
 ## 使用方式
 
-### fix_server（單執行緒）
+### fix_server（while(1) - loop）
 
 ```bash
 # 前景模式
