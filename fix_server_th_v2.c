@@ -154,6 +154,10 @@ static void *worker_thread(void *arg)
             continue;
         }
 
+        /* H-3: 設定 send timeout，防止惡意客戶端不讀資料造成 send() 永久阻塞 */
+        struct timeval snd_tv = { .tv_sec = 5, .tv_usec = 0 };
+        setsockopt(client_fd, SOL_SOCKET, SO_SNDTIMEO, &snd_tv, sizeof(snd_tv));
+
         /* ----------------------------------------------------------------
          * partial-send 迴圈：
          *   send() 不保證一次送出全部資料，必須以迴圈補送剩餘部分。
@@ -221,8 +225,9 @@ int main(int argc, char *argv[])
 
     if (optind < argc) {
         /* 命令列有指定 thread 數量 */
-        long v = strtol(argv[optind], NULL, 10);
-        if (v <= 0 || v > MAX_THREADS) {
+        char *endptr;
+        long v = strtol(argv[optind], &endptr, 10);
+        if (endptr == argv[optind] || *endptr != '\0' || v <= 0 || v > MAX_THREADS) {
             fprintf(stderr,
                     "Invalid num_threads: %s (must be 1-%d)\n",
                     argv[optind], MAX_THREADS);

@@ -163,24 +163,24 @@ int main(int argc, char *argv[])
 
     /* 解析命令列參數 */
     if (argc >= 2) {
-        long v = strtol(argv[1], NULL, 10);
-        if (v > 0 && v <= 3600)
-            duration_sec = (int)v;
-        else {
+        char *endptr;
+        long v = strtol(argv[1], &endptr, 10);
+        if (endptr == argv[1] || *endptr != '\0' || v <= 0 || v > 3600) {
             fprintf(stderr, "Invalid duration_sec: %s (must be 1-3600)\n",
                     argv[1]);
             return EXIT_FAILURE;
         }
+        duration_sec = (int)v;
     }
     if (argc >= 3) {
-        long v = strtol(argv[2], NULL, 10);
-        if (v > 0 && v <= 10000)
-            num_threads = (int)v;
-        else {
+        char *endptr;
+        long v = strtol(argv[2], &endptr, 10);
+        if (endptr == argv[2] || *endptr != '\0' || v <= 0 || v > 10000) {
             fprintf(stderr, "Invalid num_threads: %s (must be 1-10000)\n",
                     argv[2]);
             return EXIT_FAILURE;
         }
+        num_threads = (int)v;
     }
 
     printf("Benchmarking fix_server_th (%s:%d)\n", SERVER_IP, SERVER_PORT);

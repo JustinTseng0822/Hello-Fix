@@ -102,6 +102,10 @@ static void *worker_thread(void *arg)
             continue;
         }
 
+        /* H-3: 設定 send timeout，防止惡意客戶端不讀資料造成 send() 永久阻塞 */
+        struct timeval snd_tv = { .tv_sec = 5, .tv_usec = 0 };
+        setsockopt(client_fd, SOL_SOCKET, SO_SNDTIMEO, &snd_tv, sizeof(snd_tv));
+
         if (!daemon_mode)
         {
             printf("[Thread %d] client connected\n", thread_id);
@@ -119,7 +123,7 @@ static void *worker_thread(void *arg)
             ssize_t sent = send(client_fd,
                                 fix_msg + total_sent,
                                 msg_len  - total_sent,
-                                0);
+                                MSG_NOSIGNAL);  /* L-3: 避免 SIGPIPE 終止程序 */
             if (sent < 0)
             {
                 perror("send");
